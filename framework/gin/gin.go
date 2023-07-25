@@ -6,6 +6,7 @@ package gin
 
 import (
 	"fmt"
+	"github.com/gothms/httpgo/framework"
 	"github.com/gothms/httpgo/framework/gin/internal/bytesconv"
 	"github.com/gothms/httpgo/framework/gin/render"
 	"golang.org/x/net/http2"
@@ -170,6 +171,9 @@ type Engine struct {
 	maxSections      uint16
 	trustedProxies   []string
 	trustedCIDRs     []*net.IPNet
+
+	// 容器
+	container framework.Container
 }
 
 var _ IRouter = (*Engine)(nil)
@@ -206,6 +210,9 @@ func New() *Engine {
 		secureJSONPrefix:       "while(1);",
 		trustedProxies:         []string{"0.0.0.0/0", "::/0"},
 		trustedCIDRs:           defaultTrustedCIDRs,
+
+		// 注入 container
+		//container: framework.NewHttpgoContainer(),
 	}
 	engine.RouterGroup.engine = engine // 注册 RouterGroup.engine
 	engine.pool.New = func() any {
@@ -234,7 +241,7 @@ func (engine *Engine) Handler() http.Handler {
 func (engine *Engine) allocateContext(maxParams uint16) *Context {
 	v := make(Params, 0, maxParams)
 	skippedNodes := make([]skippedNode, 0, engine.maxSections)
-	return &Context{engine: engine, params: &v, skippedNodes: &skippedNodes}
+	return &Context{engine: engine, params: &v, skippedNodes: &skippedNodes, container: engine.container}
 }
 
 // Delims sets template left and right delims and returns an Engine instance.
@@ -586,9 +593,19 @@ func (engine *Engine) RunListener(listener net.Listener) (err error) {
 	return
 }
 
+//func (engine *Engine) GetContainer() framework.Container {
+//	return engine.container
+//}
+
 // ServeHTTP conforms to the http.Handler interface.
 // 遵循http.Handler的接口规范，可使gin内部调用http.ListenAndServe来启动一个http服务
 func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	container := engine.container.(*framework.HttpgoContainer)
+	providers := container.PrintProviders()
+	for i, provider := range providers {
+		fmt.Println(i, provider)
+	}
+
 	c := engine.pool.Get().(*Context) // 从sync.pool中获取 *Context
 	c.writermem.reset(w)              // 初始化ResponseWriter内存，防止数据污染
 	c.Request = req                   // 设置 Ctx 的 Request

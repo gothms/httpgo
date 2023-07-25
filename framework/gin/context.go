@@ -7,6 +7,7 @@ package gin
 import (
 	"context"
 	"errors"
+	"github.com/gothms/httpgo/framework"
 	"io"
 	"log"
 	"math"
@@ -89,6 +90,9 @@ type Context struct {
 	// SameSite allows a server to define a cookie attribute making it impossible for
 	// the browser to send this cookie along with cross-site requests.
 	sameSite http.SameSite
+
+	// Context 中保存容器
+	container framework.Container
 }
 
 /************************************/
@@ -1259,8 +1263,4 @@ func (c *Context) Value(key any) any {
 		return nil
 	}
 	return c.Request.Context().Value(key)
-}
-
-func (c *Context) BaseContext() context.Context {
-	return c.Request.Context()
 }
