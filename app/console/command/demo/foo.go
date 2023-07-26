@@ -1,6 +1,8 @@
 package demo
 
-import "log"
+import (
+	"log"
+)
 
 import (
 	"github.com/gothms/httpgo/framework/cobra"

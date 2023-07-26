@@ -14,4 +14,14 @@ interface conversion: []interface {} is not framework.Container: missing method 
 		instance, err := method(params)：传的是切片，所以类型转换时与 params[i] 不匹配
 	扩展：https://zhuanlan.zhihu.com/p/128711092
 		https://stackoverflow.com/questions/69655263/golang-interface-conversion-error-missing-method#:~:text=You%20can%27t%20have%20both%20a%20field%20and%20a,Struct.Interface%20%28%29%2C%20only%20Struct.Interface.Interface%20%28%29.%20Rename%20your%20interface.
+syscall.Kill()
+	bug
+		windows 下 goland 调用不了
+	原因
+		类似函数调用需要 linux
+		示例：//go:build linux && amd64
+	解决
+		go 文件第一行加上：// +build !windows
+	新问题
+		windows 和 !windows 同包下的文件之间互相调用不了了
 */

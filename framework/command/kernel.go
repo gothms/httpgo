@@ -6,4 +6,5 @@ import "github.com/gothms/httpgo/framework/cobra"
 func AddKernelCommands(root *cobra.Command) {
 	root.AddCommand(DemoCommand)
 	root.AddCommand(initAppCommand())
+	root.AddCommand(initCronCommand())
 }

@@ -22,6 +22,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gothms/httpgo/framework"
+	"github.com/robfig/cron/v3"
 	"io"
 	"os"
 	"path/filepath"
@@ -47,6 +48,12 @@ type Group struct {
 // you to define the usage and description as part of your command
 // definition to ensure usability.
 type Command struct {
+	// Command支持cron，只在RootCommand中有这个值
+	Cron *cron.Cron
+	// 对应Cron命令的说明文档
+	CronSpecs []CronSpec
+
+	// 服务容器
 	container framework.Container
 
 	// Use is the one-line usage message.

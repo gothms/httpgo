@@ -5,18 +5,19 @@ import (
 	"github.com/gothms/httpgo/framework"
 	"github.com/gothms/httpgo/framework/cobra"
 	"github.com/gothms/httpgo/framework/command"
+	"time"
 )
 
-// RunCommand  初始化根Command并运行
+// RunCommand 初始化根Command并运行
 func RunCommand(container framework.Container) error {
 	// 根Command
 	var rootCmd = &cobra.Command{
 		// 定义根命令的关键字
-		Use: "hade",
+		Use: "httpgo",
 		// 简短介绍
-		Short: "hade 命令",
+		Short: "httpgo 命令",
 		// 根命令的详细介绍
-		Long: "hade 框架提供的命令行工具，使用这个命令行工具能很方便执行框架自带命令，也能很方便编写业务命令",
+		Long: "httpgo 框架提供的命令行工具，使用这个命令行工具能很方便执行框架自带命令，也能很方便编写业务命令",
 		// 根命令的执行函数
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.InitDefaultHelpFlag()
@@ -38,5 +39,11 @@ func RunCommand(container framework.Container) error {
 // 绑定业务的命令
 func AddAppCommand(rootCmd *cobra.Command) {
 	//  demo 例子
-	rootCmd.AddCommand(demo.InitFoo())
+	//rootCmd.AddCommand(demo.InitFoo())
+
+	// 每秒调用一次Foo命令
+	//rootCmd.AddCronCommand("* * * * * *", demo.FooCommand)
+
+	// 启动一个分布式任务调度，调度的服务名称为init_func_for_test，每个节点每5s调用一次Foo命令，抢占到了调度任务的节点将抢占锁持续挂载2s才释放
+	rootCmd.AddDistributedCronCommand("foo_func_for_test", "*/5 * * * * *", demo.FooCommand, 2*time.Second)
 }
