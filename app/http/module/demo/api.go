@@ -2,6 +2,7 @@ package demo
 
 import (
 	demoService "github.com/gothms/httpgo/app/provider/demo"
+	"github.com/gothms/httpgo/framework/contract"
 	"github.com/gothms/httpgo/framework/gin"
 )
 
@@ -35,9 +36,13 @@ func (api *DemoApi) Demo(c *gin.Context) {
 	//appService := c.MustMake(contract.AppKey).(contract.App)
 	//baseFolder := appService.BaseFolder()
 	//c.JSON(200, baseFolder)
-	users := api.service.GetUsers()
-	usersDTO := UserModelsToUserDTOs(users)
-	c.JSON(200, usersDTO)
+	//users := api.service.GetUsers()
+	//usersDTO := UserModelsToUserDTOs(users)
+	//c.JSON(200, usersDTO)
+
+	configService := c.MustMake(contract.ConfigKey).(contract.Config)
+	password := configService.GetString("database.mysql.password")
+	c.JSON(200, password)
 }
 
 // Demo godoc
@@ -48,10 +53,10 @@ func (api *DemoApi) Demo(c *gin.Context) {
 // @Success 200 array []UserDTO
 // @Router /demo/demo2 [get]
 func (api *DemoApi) Demo2(c *gin.Context) {
-	demoProvider := c.MustMake(demoService.DemoKey).(demoService.IService)
-	students := demoProvider.GetAllStudent()
-	usersDTO := StudentsToUserDTOs(students)
-	c.JSON(200, usersDTO)
+	//demoProvider := c.MustMake(demoService.DemoKey).(demoService.IService)
+	//students := demoProvider.GetAllStudent()
+	//usersDTO := StudentsToUserDTOs(students)
+	//c.JSON(200, usersDTO)
 }
 
 func (api *DemoApi) DemoPost(c *gin.Context) {

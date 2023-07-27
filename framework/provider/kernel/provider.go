@@ -17,6 +17,9 @@ func (kh *HttpgoKernelProvider) Register(c framework.Container) framework.NewIns
 }
 
 func (kh *HttpgoKernelProvider) Boot(c framework.Container) error {
+	// 这里调用都会死锁
+	//app := c.MustMake(contract.AppKey).(contract.App)
+	//fmt.Println(app)
 	if kh.HttpEngine == nil {
 		kh.HttpEngine = gin.Default()
 	}

@@ -5,6 +5,8 @@ import (
 	httpgo "github.com/gothms/httpgo/app/http"
 	"github.com/gothms/httpgo/framework"
 	"github.com/gothms/httpgo/framework/provider/app"
+	"github.com/gothms/httpgo/framework/provider/config"
+	"github.com/gothms/httpgo/framework/provider/env"
 	"github.com/gothms/httpgo/framework/provider/kernel"
 )
 
@@ -14,6 +16,8 @@ func main() {
 	// 绑定App服务提供者
 	container.Bind(&app.HttpgoAppProvider{})
 	// 后续初始化需要绑定的服务提供者...
+	container.Bind(&env.HttpgoEnvProvider{})
+	container.Bind(&config.HttpgoConfigProvider{})
 
 	// 将HTTP引擎初始化,并且作为服务提供者绑定到服务容器中
 	//if engine, err := httpgo.NewHttpEngine(); err == nil {

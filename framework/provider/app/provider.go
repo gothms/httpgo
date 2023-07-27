@@ -10,6 +10,8 @@ type HttpgoAppProvider struct {
 	BaseFolder string
 }
 
+var _ framework.ServiceProvider = (*HttpgoAppProvider)(nil)
+
 // Register 注册HadeApp方法
 func (h *HttpgoAppProvider) Register(container framework.Container) framework.NewInstance {
 	return NewHttpgoApp

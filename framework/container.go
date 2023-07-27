@@ -63,13 +63,10 @@ func (h *HttpgoContainer) PrintProviders() []string {
 // Bind 将服务容器和关键字做了绑定
 func (h *HttpgoContainer) Bind(provider ServiceProvider) error {
 	h.lock.Lock()
-	defer h.lock.Unlock()
+	//defer h.lock.Unlock()
 	key := provider.Name()
 	h.providers[key] = provider
-	for i, sp := range h.providers {
-		fmt.Println("key:", key)
-		fmt.Printf("%s, %T\n", i, sp)
-	}
+	h.lock.Unlock()
 
 	// if provider is not defer
 	if provider.IsDefer() == false {
@@ -86,6 +83,11 @@ func (h *HttpgoContainer) Bind(provider ServiceProvider) error {
 			return errors.New(err.Error())
 		}
 		h.instances[key] = instance
+	}
+	// 可视化打印
+	for i, sp := range h.providers {
+		//fmt.Println("key:", key)
+		fmt.Printf("container %s, %T\n", i, sp)
 	}
 	return nil
 }
@@ -106,6 +108,10 @@ func (h *HttpgoContainer) Make(key string) (interface{}, error) {
 }
 
 func (h *HttpgoContainer) MustMake(key string) interface{} {
+	//if h.instances[key] != nil {
+	//	fmt.Printf("something wrong %T\n", h.instances[key])
+	//	return h.instances[key]
+	//}
 	serv, err := h.make(key, nil, false)
 	if err != nil {
 		panic(err)
@@ -146,6 +152,7 @@ func (h *HttpgoContainer) newInstance(sp ServiceProvider, params []interface{}) 
 
 // 实例化一个服务
 func (h *HttpgoContainer) make(key string, params []interface{}, forceNew bool) (interface{}, error) {
+	//fmt.Println("key::", key)
 	h.lock.RLock()
 	defer h.lock.RUnlock()
 	// 查询是否已经注册了这个服务提供者，如果没有，则返回error
@@ -158,6 +165,7 @@ func (h *HttpgoContainer) make(key string, params []interface{}, forceNew bool) 
 	}
 	// 不需要强制重新实例化，如果容器中已经实例化了，那么就直接使用容器中的实例
 	if ins, ok := h.instances[key]; ok {
+		//fmt.Println("find!")
 		return ins, nil
 	}
 	// 容器中还未实例化，则进行一次实例化

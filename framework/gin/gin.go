@@ -603,7 +603,7 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	container := engine.container.(*framework.HttpgoContainer)
 	providers := container.PrintProviders()
 	for i, provider := range providers {
-		fmt.Println(i, provider)
+		fmt.Println("gin", i, provider)
 	}
 
 	c := engine.pool.Get().(*Context) // 从sync.pool中获取 *Context

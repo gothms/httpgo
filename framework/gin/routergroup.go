@@ -5,7 +5,6 @@
 package gin
 
 import (
-	"fmt"
 	"net/http"
 	"path"
 	"regexp"
@@ -262,7 +261,7 @@ func (group *RouterGroup) combineHandlers(handlers HandlersChain) HandlersChain 
 	mergedHandlers := make(HandlersChain, finalSize)
 	copy(mergedHandlers, group.Handlers)
 	copy(mergedHandlers[len(group.Handlers):], handlers)
-	fmt.Println("routerGroup:", handlers)
+	//fmt.Println("routerGroup:", handlers)
 	return mergedHandlers
 }
 
